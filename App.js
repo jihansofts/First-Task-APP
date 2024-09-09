@@ -1,15 +1,23 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, Text, View, Button, FlatList } from "react-native";
 import React, { useState } from "react";
 import TaskItem from "./src/Components/TaskItem";
 import AddTask from "./src/Components/AddTask";
 export default function App() {
   const [task, setTask] = useState([]);
+  const [ShowModel, setShowModel] = useState(false);
   const addTask = (task) => {
     setTask((prveTask) => [
       ...prveTask,
       { task: task, id: Math.random().toString() },
     ]);
+    HideModel();
+  };
+  const HandleModel = () => {
+    setShowModel(true);
+  };
+  const HideModel = () => {
+    setShowModel(false);
   };
 
   const onClearTask = (id) => {
@@ -20,8 +28,9 @@ export default function App() {
     });
   };
   return (
-    <View style={styles.container}>
-      <AddTask addTask={addTask} />
+    <View style={styles.container} animation="slide">
+      <AddTask addTask={addTask} visible={ShowModel} HideModel={HideModel} />
+      <Button title="Add Task" onPress={HandleModel}></Button>
       <View style={styles.TextView}>
         {task.length > 0 ? (
           <Text style={styles.TaskTitle}>TaskList:</Text>

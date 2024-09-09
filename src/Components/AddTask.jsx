@@ -1,6 +1,6 @@
-import { View, TextInput, Button, StyleSheet } from "react-native";
+import { View, TextInput, Button, Modal, StyleSheet } from "react-native";
 import React, { useState } from "react";
-export default function AddTask({ addTask }) {
+export default function AddTask({ addTask, HideModel, visible }) {
   const [input, setInput] = useState("");
   const HandleButton = () => {
     if (input !== "") {
@@ -9,22 +9,32 @@ export default function AddTask({ addTask }) {
     }
   };
   return (
-    <View style={styles.InputItem}>
-      <TextInput
-        value={input}
-        onChangeText={setInput}
-        style={styles.InputStyle}
-        placeholder="Enter Task"></TextInput>
-      <Button onPress={HandleButton} title="Add Tak"></Button>
-    </View>
+    <Modal animationType="slide" visible={visible}>
+      <View style={styles.InputContainer}>
+        <TextInput
+          value={input}
+          onChangeText={setInput}
+          style={styles.InputStyle}
+          placeholder="Enter Task"></TextInput>
+        <View style={styles.BtnGroup}>
+          <View style={styles.Btn}>
+            <Button onPress={HandleButton} title="Add Task"></Button>
+          </View>
+          <View style={styles.Btn}>
+            <Button onPress={HideModel} title="CANCEL"></Button>
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 }
 const styles = StyleSheet.create({
-  InputItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  InputContainer: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
+    marginTop: 10,
   },
   InputStyle: {
     width: "70%",
@@ -33,5 +43,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
     paddingLeft: 20,
+  },
+  BtnGroup: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 10,
+  },
+  Btn: {
+    cursor: "pointer",
   },
 });
