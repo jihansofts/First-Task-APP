@@ -1,55 +1,45 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, TextInput, Button, View } from "react-native";
+import { StyleSheet, Text, View, FlatList } from "react-native";
 import React, { useState } from "react";
-import Test from "./src/Test";
+import TaskItem from "./src/Components/TaskItem";
+import AddTask from "./src/Components/AddTask";
 export default function App() {
   const [task, setTask] = useState([]);
-  const [input, setInput] = useState("");
-
-  const HandleInput = (e) => {
-    setInput(e);
+  const addTask = (task) => {
+    setTask((prveTask) => [
+      ...prveTask,
+      { task: task, id: Math.random().toString() },
+    ]);
   };
-  const addTask = () => {
-    if (input !== "") {
-      setTask([...task, input]);
-      setInput("");
-    }
+
+  const onClearTask = (id) => {
+    setTask((prveTask) => {
+      return prveTask.filter((item) => {
+        return item.id !== id;
+      });
+    });
   };
   return (
     <View style={styles.container}>
-      <View style={styles.InputItem}>
-        <TextInput
-          value={input}
-          onChangeText={HandleInput}
-          style={styles.InputStyle}
-          placeholder="Enter Task"></TextInput>
-        <Button onPress={addTask} title="Add Tak"></Button>
-      </View>
+      <AddTask addTask={addTask} />
       <View style={styles.TextView}>
-        <Text style={styles.TaskTitle}>TaskList:</Text>
-        <View>
-          {task?.map((item, index) => (
-            <Text key={index} style={styles.TextItem}>
-              {item}
-            </Text>
-          ))}
-          <Button
-            style={{
-              backgroundColor: "#00A884",
-              color: "white",
-              padding: 10,
-              borderRadius: 5,
-            }}
-            onPress={() => setTask([])}
-            title="Clear">
-            Clear
-          </Button>
-        </View>
+        {task.length > 0 ? (
+          <Text style={styles.TaskTitle}>TaskList:</Text>
+        ) : (
+          <Text style={styles.TaskTitle}>Task List: No</Text>
+        )}
       </View>
+      <FlatList
+        data={task}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item: task }) => (
+          <TaskItem onClearTask={onClearTask} item={task} index={task.id} />
+        )}
+      />
+
       <StatusBar style="auto" />
     </View>
   );
-  2;
 }
 
 const styles = StyleSheet.create({
@@ -57,20 +47,7 @@ const styles = StyleSheet.create({
     padding: 40,
     paddingHorizontal: 20,
   },
-  InputItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  InputStyle: {
-    width: "70%",
-    borderWidth: 1,
-    borderColor: "#00A884",
-    borderRadius: 5,
-    padding: 5,
-    paddingLeft: 20,
-  },
+
   TextView: {
     margin: 10,
     borderTopColor: "#000000",
@@ -80,12 +57,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "#00A884",
-  },
-  TextItem: {
-    marginTop: 10,
-    backgroundColor: "#00A884",
-    color: "white",
-    padding: 10,
-    borderRadius: 5,
   },
 });
